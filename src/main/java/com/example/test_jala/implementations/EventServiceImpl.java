@@ -1,6 +1,8 @@
 package com.example.test_jala.implementations;
 
+import com.example.test_jala.exceptions.BadRequestException;
 import com.example.test_jala.exceptions.ConflictException;
+import com.example.test_jala.exceptions.NotFoundException;
 import com.example.test_jala.services.EventService;
 import com.example.test_jala.dto.EventDto;
 import com.example.test_jala.dto.QueryParamsDto;
@@ -68,10 +70,18 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    public void restoreEventAvSeats(Long id) {
+        Event event = getEventById(id);
+        if(event.getDate().before(new Date())) throw new BadRequestException("Event has already passed");
+        event.setAvailableSeats(event.getAvailableSeats() + 1);
+        eventRepository.save(event);
+    }
+
+    @Override
     public Event getEventById(Long id) {
         logger.info("Event id {}",id );
         Event event = eventRepository.findEventByIdAndStatus(id, 1);
-        if(event == null) throw new RuntimeException("Resource not found");
+        if(event == null) throw new NotFoundException("Resource not found");
         return event;
     }
 }

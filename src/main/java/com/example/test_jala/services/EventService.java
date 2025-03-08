@@ -14,5 +14,6 @@ public interface EventService {
     EventDto createEvent (EventDto eventDto);
     Page<EventDto> getEventsPaged (QueryParamsDto queryParamsDto);
     void reduceEventAvSeats(Long id);
+    void restoreEventAvSeats(Long id);
     Event getEventById(Long id);
 }

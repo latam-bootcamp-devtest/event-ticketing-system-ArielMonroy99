@@ -2,6 +2,7 @@ package com.example.test_jala.implementations;
 
 import com.example.test_jala.dto.TicketDto;
 import com.example.test_jala.entities.Ticket;
+import com.example.test_jala.exceptions.NotFoundException;
 import com.example.test_jala.repositories.TicketRepository;
 import com.example.test_jala.services.EventService;
 import com.example.test_jala.services.TicketService;
@@ -30,8 +31,19 @@ public class TicketServiceImpl implements TicketService {
         Ticket ticket = new Ticket();
         ticket.setEventId(ticketDto.getEventId());
         ticket.setUserId(ticketDto.getUserId());
+        ticket.setStatus(1);
         ticketRepository.save(ticket);
         ticketDto.setId(ticket.getId());
         return ticketDto;
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void cancelBooking(Long id) {
+        Ticket ticket = ticketRepository.findTicketByIdAndStatus(id,1);
+        if(ticket == null) throw new NotFoundException("Ticket not found");
+        eventService.restoreEventAvSeats(ticket.getEventId());
+        ticket.setStatus(0);
+        ticketRepository.save(ticket);
     }
 }
