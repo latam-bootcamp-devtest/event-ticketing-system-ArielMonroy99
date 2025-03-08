@@ -1,5 +1,6 @@
 package com.example.test_jala.implementations;
 
+import com.example.test_jala.dto.BookingDto;
 import com.example.test_jala.exceptions.BadRequestException;
 import com.example.test_jala.exceptions.ConflictException;
 import com.example.test_jala.exceptions.NotFoundException;
@@ -83,5 +84,30 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findEventByIdAndStatus(id, 1);
         if(event == null) throw new NotFoundException("Resource not found");
         return event;
+    }
+
+    @Override
+    public Page<BookingDto> getBookedEventsByUserId(Long userId, QueryParamsDto queryParamsDto) {
+        if(queryParamsDto.getSort().equals("userId")){
+            queryParamsDto.setSort("t.user_id");
+        }
+        if(queryParamsDto.getSort().equals("ticketId")){
+            queryParamsDto.setSort("t.ticket_id");
+        }
+        if(queryParamsDto.getSort().equals("name")){
+            queryParamsDto.setSort("e.name");
+        }
+
+        Pageable pageable ;
+        if(queryParamsDto.getDirection().equals("ASC")){
+            pageable = PageRequest.of(queryParamsDto.getPage(), queryParamsDto.getPageSize(),Sort.by(queryParamsDto.getSort()).ascending());
+        } else {
+            pageable = PageRequest.of(queryParamsDto.getPage(), queryParamsDto.getPageSize(),Sort.by(queryParamsDto.getSort()).descending());
+        }
+        return eventRepository.findBookedEventsByUserId(
+                                userId,
+                                queryParamsDto.getAfterDate(),
+                                queryParamsDto.getBeforeDate(),
+                        "%"+queryParamsDto.getFilter()+"%",pageable);
     }
 }

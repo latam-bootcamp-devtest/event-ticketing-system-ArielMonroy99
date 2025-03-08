@@ -1,5 +1,6 @@
 package com.example.test_jala.config;
 
+import com.example.test_jala.dto.ResponseDto;
 import com.example.test_jala.exceptions.BadRequestException;
 import com.example.test_jala.exceptions.ConflictException;
 import com.example.test_jala.exceptions.NotFoundException;
@@ -13,21 +14,21 @@ public class GlobalErrorHandler {
 
     @ExceptionHandler({RuntimeException.class})
     public ResponseEntity<?> handleRuntimeException (RuntimeException exception){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto(System.currentTimeMillis(),exception.getMessage(),400));
     }
 
     @ExceptionHandler({ConflictException.class})
     public ResponseEntity<?> handleConflictException (ConflictException exception){
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(new ResponseDto(System.currentTimeMillis(),exception.getMessage(),409));
     }
 
     @ExceptionHandler({BadRequestException.class})
     public ResponseEntity<?> handleBadRequestException (BadRequestException exception){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto(System.currentTimeMillis(),exception.getMessage(),400));
     }
 
     @ExceptionHandler({NotFoundException.class})
     public ResponseEntity<?> handleNotFoundException (NotFoundException exception){
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(exception.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDto(System.currentTimeMillis(),exception.getMessage(),404));
     }
 }
