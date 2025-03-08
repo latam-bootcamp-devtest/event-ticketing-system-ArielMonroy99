@@ -82,7 +82,7 @@ public class EventServiceImpl implements EventService {
     public Event getEventById(Long id) {
         logger.info("Event id {}",id );
         Event event = eventRepository.findEventByIdAndStatus(id, 1);
-        if(event == null) throw new NotFoundException("Resource not found");
+        if(event == null) throw new NotFoundException("Event not found");
         return event;
     }
 
