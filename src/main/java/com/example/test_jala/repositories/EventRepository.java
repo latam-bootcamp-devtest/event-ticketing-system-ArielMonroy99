@@ -10,4 +10,5 @@ import org.springframework.data.jpa.repository.Query;
 public interface EventRepository extends JpaRepository<Event,Long> {
     @Query("select e from Event e where e.date > CURRENT_DATE ")
     Page<Event> findEvents(Pageable pageable);
+    Event findEventByIdAndStatus(Long id,Integer status);
 }

@@ -1,10 +1,13 @@
 package com.example.test_jala.implementations;
 
+import com.example.test_jala.exceptions.ConflictException;
 import com.example.test_jala.services.EventService;
 import com.example.test_jala.dto.EventDto;
 import com.example.test_jala.dto.QueryParamsDto;
 import com.example.test_jala.entities.Event;
 import com.example.test_jala.repositories.EventRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -17,6 +20,7 @@ import java.util.Date;
 public class EventServiceImpl implements EventService {
 
     private final EventRepository eventRepository;
+    public static final Logger logger = LoggerFactory.getLogger(EventServiceImpl.class);
 
     public EventServiceImpl(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
@@ -52,5 +56,22 @@ public class EventServiceImpl implements EventService {
             eventDto.setDate(event.getDate());
             return eventDto;
         });
+    }
+
+    @Override
+    public void reduceEventAvSeats(Long id) {
+        Event event = getEventById(id);
+        if(event.getAvailableSeats() < 1) throw new ConflictException("Event has no available seats");
+        event.setAvailableSeats(event.getAvailableSeats() - 1);
+        eventRepository.save(event);
+
+    }
+
+    @Override
+    public Event getEventById(Long id) {
+        logger.info("Event id {}",id );
+        Event event = eventRepository.findEventByIdAndStatus(id, 1);
+        if(event == null) throw new RuntimeException("Resource not found");
+        return event;
     }
 }
