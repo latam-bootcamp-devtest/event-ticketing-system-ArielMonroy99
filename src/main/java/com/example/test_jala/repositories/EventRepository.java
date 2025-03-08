@@ -15,7 +15,7 @@ public interface EventRepository extends JpaRepository<Event,Long> {
     Page<Event> findEvents(Pageable pageable);
     Event findEventByIdAndStatus(Long id,Integer status);
 
-    @Query(value = "Select t.user_id as userId,t.event_id as eventId, t.id as ticket_id, e.name as name " +
+    @Query(value = "Select t.user_id as userId,t.event_id as eventId, t.id as ticketId, e.name as name " +
             "from events e join ticket t  on t.event_id = e.event_id " +
             "where t.user_id = :userId and t.status = 1 " +
             "and e.date between :afterDate and :beforeDate and e.name ilike :filter" , nativeQuery = true)

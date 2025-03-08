@@ -88,15 +88,6 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public Page<BookingDto> getBookedEventsByUserId(Long userId, QueryParamsDto queryParamsDto) {
-        if(queryParamsDto.getSort().equals("userId")){
-            queryParamsDto.setSort("t.user_id");
-        }
-        if(queryParamsDto.getSort().equals("ticketId")){
-            queryParamsDto.setSort("t.ticket_id");
-        }
-        if(queryParamsDto.getSort().equals("name")){
-            queryParamsDto.setSort("e.name");
-        }
 
         Pageable pageable ;
         if(queryParamsDto.getDirection().equals("ASC")){
